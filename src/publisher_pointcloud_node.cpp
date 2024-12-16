@@ -50,12 +50,12 @@ private:
             sor.filter(cloud);
         }
 
-        sensor_msgs::msg::PointCloud2 msg;
-        pcl::toROSMsg(cloud, msg);
+        sensor_msgs::msg::PointCloud2::UniquePtr msg(new sensor_msgs::msg::PointCloud2());
+        pcl::toROSMsg(cloud, *msg);
 
         RCLCPP_INFO(get_logger(), "Publish pointcloud");
-        msg.header.set__frame_id("nemui");
-        publisher_->publish(msg);
+        msg->header.set__frame_id("nemui");
+        publisher_->publish(std::move(msg));
 
         if (interval <= 0)
         {
