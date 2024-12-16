@@ -24,36 +24,25 @@ std::string getTimestamp()
 
 using std::placeholders::_1;
 
-class PubSubPointCloudNode : public rclcpp::Node
+class SubscribePointCloudNode : public rclcpp::Node
 {
 public:
-  PubSubPointCloudNode()
-      : Node("pubsub_pointcloud_node")
+  SubscribePointCloudNode()
+      : Node("subscribe_pointcloud_node")
   {
     subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-        "scan", 10, std::bind(&PubSubPointCloudNode::subscriber_callback, this, _1));
+        "scan", 10, std::bind(&SubscribePointCloudNode::subscriber_callback, this, _1));
   }
 
 private:
   void subscriber_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg) const
   {
     RCLCPP_INFO(this->get_logger(), "subscribe pointcloud(size: %d)", msg->data.size());
+    RCLCPP_INFO(this->get_logger(), "timestamp %ds %dns", msg->header.stamp.sec, msg->header.stamp.nanosec);
     pcl::PointCloud<pcl::PointXYZRGB> cloud;
     pcl::fromROSMsg(*msg, cloud);
     auto filepath = "/home/suzaku/ros_choreonoid/pointcloud/";
     auto filename = "merged" + getTimestamp() + ".pcd";
-
-    pcl::PassThrough<pcl::PointXYZRGB> Cloud_Filter;
-    Cloud_Filter.setInputCloud(cloud.makeShared());
-    Cloud_Filter.setFilterFieldName("z");
-    Cloud_Filter.setFilterLimits(-1, 1);
-    Cloud_Filter.filter(cloud);
-
-    pcl::PassThrough<pcl::PointXYZRGB> Cloud_Filter2;
-    Cloud_Filter.setInputCloud(cloud.makeShared());
-    Cloud_Filter.setFilterFieldName("x");
-    Cloud_Filter.setFilterLimits(-1, 1);
-    Cloud_Filter.filter(cloud);
 
     pcl::io::savePCDFileBinary(filepath + filename, cloud);
   }
@@ -64,7 +53,7 @@ private:
 int main(int argc, char **argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<PubSubPointCloudNode>());
+  rclcpp::spin(std::make_shared<SubscribePointCloudNode>());
   rclcpp::shutdown();
 
   return 0;

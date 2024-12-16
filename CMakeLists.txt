@@ -24,33 +24,49 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(pcl_conversions REQUIRED)
-find_package(PCL REQUIRED COMPONENTS common io)
 find_package(PCL 1.13 REQUIRED)
 
 include_directories(
   include
 )
-# include_directories(SYSTEM ${PCL_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(pubsub_pointcloud_node src/pubsub_pointcloud_node.cpp)
+add_executable(subscribe_pointcloud_node src/subscribe_pointcloud_node.cpp)
 
-ament_target_dependencies(pubsub_pointcloud_node
+ament_target_dependencies(subscribe_pointcloud_node
   rclcpp
   sensor_msgs
   pcl_conversions
   PCL
 )
 
-target_link_libraries(pubsub_pointcloud_node ${PCL_LIBRARIES})
+target_link_libraries(subscribe_pointcloud_node ${PCL_LIBRARIES})
 
-target_include_directories(pubsub_pointcloud_node PUBLIC
+target_include_directories(subscribe_pointcloud_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-install(TARGETS pubsub_pointcloud_node
+install(TARGETS subscribe_pointcloud_node
+  DESTINATION lib/${PROJECT_NAME})
+
+add_executable(publisher_pointcloud_node src/publisher_pointcloud_node.cpp)
+
+ament_target_dependencies(publisher_pointcloud_node
+  rclcpp
+  sensor_msgs
+  pcl_conversions
+  PCL
+)
+
+target_link_libraries(publisher_pointcloud_node ${PCL_LIBRARIES})
+
+target_include_directories(publisher_pointcloud_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+install(TARGETS publisher_pointcloud_node
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
