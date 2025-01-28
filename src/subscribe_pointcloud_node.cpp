@@ -41,7 +41,7 @@ private:
   {
     RCLCPP_INFO(this->get_logger(), "subscribe pointcloud(size: %d)", msg->data.size());
     RCLCPP_INFO(this->get_logger(), "timestamp %ds %dns", msg->header.stamp.sec, msg->header.stamp.nanosec);
-    static pcl::PointCloud<pcl::PointXYZRGB> all_cloud;
+    pcl::PointCloud<pcl::PointXYZRGB> all_cloud;
     pcl::PointCloud<pcl::PointXYZRGB> cloud;
 
     pcl::fromROSMsg(*msg, cloud);
