@@ -22,6 +22,7 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(pcl_conversions REQUIRED)
 find_package(PCL 1.13 REQUIRED)
@@ -55,6 +56,7 @@ add_executable(publisher_pointcloud_node src/publisher_pointcloud_node.cpp)
 
 ament_target_dependencies(publisher_pointcloud_node
   rclcpp
+  std_msgs
   sensor_msgs
   pcl_conversions
   PCL
